@@ -11,8 +11,8 @@
 #include <IRremote.hpp>
 
 const static int KEY_PWR = 4;
-const static int KEY_VOLUMEUP = A0;
-const static int KEY_VOLUMEDOWN = A3;
+const static int KEY_VOLUMEUP = A3;
+const static int KEY_VOLUMEDOWN = A0;
 
 void setup() {
   // put your setup code here, to run once:
