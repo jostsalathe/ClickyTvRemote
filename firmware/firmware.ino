@@ -32,27 +32,26 @@ void setup() {
   Serial.println();
 }
 
+int volume = 0;
+
 void loop() {
   // put your main code here, to run repeatedly:
   // read buttons and send codes according to IRDB
   // https://github.com/probonopd/irdb/blob/master/codes/Philips/Unknown_32PFL5403D/0%2C-1.csv
   if (!digitalRead(KEY_PWR)) {
     IrSender.sendRC6(0, 12, 1);
-    while (!digitalRead(KEY_PWR)) {
-      IrSender.sendRC6(0, 12, 1, false);
-    }
+    delay(50);
   }
   if (!digitalRead(KEY_VOLUMEUP)) {
     IrSender.sendRC6(0, 16, 1);
-    while (!digitalRead(KEY_VOLUMEUP)) {
-      IrSender.sendRC6(0, 16, 1, false);
-    }
+    Serial.print("Vol=");
+    Serial.println(++volume);
+    delay(50);
   }
   if (!digitalRead(KEY_VOLUMEDOWN)) {
     IrSender.sendRC6(0, 17, 1);
-    while (!digitalRead(KEY_VOLUMEDOWN)) {
-      IrSender.sendRC6(0, 17, 1, false);
-    }
+    Serial.print("Vol=");
+    Serial.println(--volume);
+    delay(50);
   }
-  delay(1);
 }
