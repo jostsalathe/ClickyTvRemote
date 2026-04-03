@@ -1,0 +1,166 @@
+(footprint "IR12-21CTR8"
+	(version 20260206)
+	(generator "pcbnew")
+	(generator_version "10.0")
+	(layer "F.Cu")
+	(descr "EVERLIGHT Chip Infrared LED With Right Angle Lens")
+	(tags "IR LED SMD right angle side")
+	(property "Reference" "REF**"
+		(at 0 1.5 0)
+		(unlocked yes)
+		(layer "F.SilkS")
+		(uuid "a9b514a4-3d62-4584-a998-661606381e1a")
+		(effects
+			(font
+				(size 1 1)
+				(thickness 0.1)
+			)
+		)
+	)
+	(property "Value" "IR12-21C/TR8"
+		(at 0 1 0)
+		(unlocked yes)
+		(layer "F.Fab")
+		(uuid "edd6952f-7ebf-4d25-8dd4-8e75f36c5c0a")
+		(effects
+			(font
+				(size 1 1)
+				(thickness 0.15)
+			)
+		)
+	)
+	(property "Datasheet" ""
+		(at 0 0 0)
+		(unlocked yes)
+		(layer "F.Fab")
+		(hide yes)
+		(uuid "c01e2f52-74f3-48a2-9843-f0c49740f20b")
+		(effects
+			(font
+				(size 1 1)
+				(thickness 0.15)
+			)
+		)
+	)
+	(property "Description" ""
+		(at 0 0 0)
+		(unlocked yes)
+		(layer "F.Fab")
+		(hide yes)
+		(uuid "47c309cf-0ae5-42fb-87d0-1f213ac34a69")
+		(effects
+			(font
+				(size 1 1)
+				(thickness 0.15)
+			)
+		)
+	)
+	(attr smd)
+	(duplicate_pad_numbers_are_jumpers no)
+	(fp_line
+		(start -1 -0.7)
+		(end 1 -0.7)
+		(stroke
+			(width 0.1)
+			(type default)
+		)
+		(layer "F.SilkS")
+		(uuid "29eab886-20f0-4a8a-a143-26f2e9151e30")
+	)
+	(fp_line
+		(start -0.55 0.4)
+		(end -1 0.4)
+		(stroke
+			(width 0.1)
+			(type default)
+		)
+		(layer "F.SilkS")
+		(uuid "b12a6887-58db-4d9b-af20-aa088323a070")
+	)
+	(fp_line
+		(start 0 -0.7)
+		(end -0.965926 -0.958819)
+		(stroke
+			(width 0.1)
+			(type solid)
+		)
+		(layer "F.SilkS")
+		(uuid "dff66356-abbc-4e50-a5c8-b811f3f02da5")
+	)
+	(fp_line
+		(start 0 -0.7)
+		(end 0.965926 -0.958819)
+		(stroke
+			(width 0.1)
+			(type solid)
+		)
+		(layer "F.SilkS")
+		(uuid "221ea196-63a3-4bbb-a64f-791a9d0be984")
+	)
+	(fp_line
+		(start 0.55 0.4)
+		(end 1 0.4)
+		(stroke
+			(width 0.1)
+			(type default)
+		)
+		(layer "F.SilkS")
+		(uuid "64762939-0edb-4a20-afa2-20e94782cca7")
+	)
+	(fp_rect
+		(start -1 -0.5)
+		(end -0.55 0.2)
+		(stroke
+			(width 0.1)
+			(type solid)
+		)
+		(fill yes)
+		(layer "F.SilkS")
+		(uuid "b42abd87-c0f5-4152-b788-d92fa4e0c47e")
+	)
+	(fp_arc
+		(start -0.9 -0.7)
+		(mid 0 -1.6)
+		(end 0.9 -0.7)
+		(stroke
+			(width 0.1)
+			(type solid)
+		)
+		(layer "F.SilkS")
+		(uuid "6de31812-f25a-40ef-9fe2-165a81607788")
+	)
+	(fp_text user "${REFERENCE}"
+		(at 0 2.5 0)
+		(unlocked yes)
+		(layer "F.Fab")
+		(uuid "571b6674-aaff-468d-87ee-183edd9ade7f")
+		(effects
+			(font
+				(size 1 1)
+				(thickness 0.15)
+			)
+		)
+	)
+	(pad "" smd roundrect
+		(at 0 0.4)
+		(size 0.9 0.6)
+		(layers "F.Cu" "F.Mask" "F.Paste")
+		(roundrect_rratio 0.15)
+		(uuid "334c98cf-fb91-4cb4-8f7f-7dd81c360811")
+	)
+	(pad "1" smd roundrect
+		(at -1.5 0)
+		(size 0.8 1.4)
+		(layers "F.Cu" "F.Mask" "F.Paste")
+		(roundrect_rratio 0.15)
+		(uuid "11b7abe4-e154-4c59-aaf1-bec0eb0f8e53")
+	)
+	(pad "2" smd roundrect
+		(at 1.5 0)
+		(size 0.8 1.4)
+		(layers "F.Cu" "F.Mask" "F.Paste")
+		(roundrect_rratio 0.15)
+		(uuid "a543391b-39e4-4081-8bba-c98891559db1")
+	)
+	(embedded_fonts no)
+)
