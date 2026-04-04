@@ -1,11 +1,11 @@
-#define IR_SEND_PIN 3       // 3 for Arduino Nano but probably PIN_PA3 or PIN_PA5 on ATtiny3226...
+#define IR_SEND_PIN 3             // 3 for Arduino Nano but Pin_PA5 on ATtiny3226...
 
 #if !defined(ARDUINO_ESP32C3_DEV) // This is due to a bug in RISC-V compiler, which requires unused function sections :-(.
 #define DISABLE_CODE_FOR_RECEIVER // Disables static receiver code like receive timer ISR handler and static IRReceiver and irparams data. Saves 450 bytes program memory and 269 bytes RAM if receiving functions are not required.
 #endif
 
-//#undef LED_BUILTIN          // No LED defined in megaTinyCore
-//#define LED_BUILTIN PIN_PB5 // 4
+//#undef LED_BUILTIN                // No LED defined in megaTinyCore
+//#define LED_BUILTIN Pin_PA1
 //#define NO_LED_FEEDBACK_CODE      // Saves 216 bytes program memory
 
 #include <IRremote.hpp>
@@ -26,21 +26,24 @@ static constexpr int TIME_SINGLE_PRESS_MS = 500;
 static constexpr int TIME_REPEAT_PRESS_MS = 100;
 
 static constexpr Command commands[] = {
-  // {Pin_PA2, 0, 0xff, "???"},
-  // {Pin_PA3, 0, 0xff, "???"},
-  {4, 0, 12, "KEY_PWR"}, // {Pin_PA4, 0, 12, "KEY_PWR"},
-  // {Pin_PA6, 0, 32, "KEY_CHANNELUP"},
-  {A3, 0, 16, "KEY_VOLUMEUP"}, // {Pin_PA7, 0, 16, "KEY_VOLUMEUP"},
-  // {Pin_PB0, 0, 245, "KEY_Picture_Format"},
-  // {Pin_PB1, 0, 33, "KEY_CHANNELDOWN"},
-  {A0, 0, 17, "KEY_VOLUMEDOWN"}, // {Pin_PB2, 0, 17, "KEY_VOLUMEDOWN"},
-  // {Pin_PB3, 0, 13, "KEY_MUTE"},
-  // {Pin_PB4, 0, 84, "KEY_MENU"},
-  // {Pin_PB5, 0, 88, "KEY_UP"},
-  // {Pin_PC0, 0, 92, "KEY_OK"},
-  // {Pin_PC1, 0, 90, "KEY_LEFT"},
-  // {Pin_PC2, 0, 89, "KEY_DOWN"},
-  // {Pin_PC3, 0, 91, "KEY_RIGHT"},
+  // {Pin_PB0, 0, 0xff, "???"},               // KEY_0_0
+  // {Pin_PB5, 0, 0xff, "???"},               // KEY_1_0
+  {4, 0, 12, "KEY_PWR"}, // on Nano prototype
+  // {Pin_PA2, 0, 12, "KEY_PWR"},             // KEY_2_0
+  // {Pin_PC0, 0, 32, "KEY_CHANNELUP"},       // KEY_0_1
+  {A3, 0, 16, "KEY_VOLUMEUP"}, // on Nano prototype
+  // {Pin_PB4, 0, 16, "KEY_VOLUMEUP"},        // KEY_1_1
+  // {Pin_PA3, 0, 245, "KEY_Picture_Format"}, // KEY_2_1
+  // {Pin_PC1, 0, 33, "KEY_CHANNELDOWN"},     // KEY_0_2
+  {A0, 0, 17, "KEY_VOLUMEDOWN"}, // on Nano prototype
+  // {Pin_PB3, 0, 17, "KEY_VOLUMEDOWN"},      // KEY_1_2
+  // {Pin_PA4, 0, 13, "KEY_MUTE"},            // KEY_2_2
+  // {Pin_PC2, 0, 84, "KEY_MENU"},            // KEY_0_3
+  // {Pin_PB2, 0, 88, "KEY_UP"},              // KEY_1_3
+  // {Pin_PA6, 0, 92, "KEY_OK"},              // KEY_2_3
+  // {Pin_PC3, 0, 90, "KEY_LEFT"},            // KEY_0_4
+  // {Pin_PB1, 0, 89, "KEY_DOWN"},            // KEY_1_4
+  // {Pin_PA7, 0, 91, "KEY_RIGHT"},           // KEY_2_4
 };
 
 
