@@ -8908,7 +8908,7 @@
 				(justify right)
 			)
 		)
-		(property "Footprint" "LED_THT:LED_D3.0mm_Horizontal_O3.81mm_Z2.0mm"
+		(property "Footprint" "LED_THT:LED_D3.0mm_Horizontal_O1.27mm_Z2.0mm_IRBlack"
 			(at 177.8 82.55 90)
 			(hide yes)
 			(show_name no)
