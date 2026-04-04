@@ -3793,7 +3793,7 @@
 	)
 	(wire
 		(pts
-			(xy 261.62 101.6) (xy 271.78 101.6)
+			(xy 261.62 129.54) (xy 271.78 129.54)
 		)
 		(stroke
 			(width 0)
@@ -3933,7 +3933,7 @@
 	)
 	(wire
 		(pts
-			(xy 261.62 127) (xy 271.78 127)
+			(xy 231.14 121.92) (xy 220.98 121.92)
 		)
 		(stroke
 			(width 0)
@@ -3983,7 +3983,7 @@
 	)
 	(wire
 		(pts
-			(xy 261.62 124.46) (xy 271.78 124.46)
+			(xy 261.62 104.14) (xy 271.78 104.14)
 		)
 		(stroke
 			(width 0)
@@ -4003,7 +4003,7 @@
 	)
 	(wire
 		(pts
-			(xy 261.62 99.06) (xy 271.78 99.06)
+			(xy 261.62 116.84) (xy 271.78 116.84)
 		)
 		(stroke
 			(width 0)
@@ -4023,7 +4023,7 @@
 	)
 	(wire
 		(pts
-			(xy 261.62 111.76) (xy 271.78 111.76)
+			(xy 261.62 127) (xy 271.78 127)
 		)
 		(stroke
 			(width 0)
@@ -4113,7 +4113,7 @@
 	)
 	(wire
 		(pts
-			(xy 261.62 121.92) (xy 271.78 121.92)
+			(xy 261.62 124.46) (xy 271.78 124.46)
 		)
 		(stroke
 			(width 0)
@@ -4303,7 +4303,7 @@
 	)
 	(wire
 		(pts
-			(xy 220.98 116.84) (xy 231.14 116.84)
+			(xy 271.78 109.22) (xy 261.62 109.22)
 		)
 		(stroke
 			(width 0)
@@ -4313,7 +4313,7 @@
 	)
 	(wire
 		(pts
-			(xy 220.98 119.38) (xy 231.14 119.38)
+			(xy 220.98 124.46) (xy 231.14 124.46)
 		)
 		(stroke
 			(width 0)
@@ -4353,7 +4353,7 @@
 	)
 	(wire
 		(pts
-			(xy 261.62 116.84) (xy 271.78 116.84)
+			(xy 261.62 101.6) (xy 271.78 101.6)
 		)
 		(stroke
 			(width 0)
@@ -4543,7 +4543,7 @@
 	)
 	(wire
 		(pts
-			(xy 261.62 109.22) (xy 271.78 109.22)
+			(xy 231.14 116.84) (xy 220.98 116.84)
 		)
 		(stroke
 			(width 0)
@@ -4683,7 +4683,7 @@
 	)
 	(wire
 		(pts
-			(xy 261.62 104.14) (xy 271.78 104.14)
+			(xy 261.62 99.06) (xy 271.78 99.06)
 		)
 		(stroke
 			(width 0)
@@ -4693,7 +4693,7 @@
 	)
 	(wire
 		(pts
-			(xy 261.62 129.54) (xy 271.78 129.54)
+			(xy 261.62 121.92) (xy 271.78 121.92)
 		)
 		(stroke
 			(width 0)
@@ -4723,7 +4723,7 @@
 	)
 	(wire
 		(pts
-			(xy 220.98 124.46) (xy 231.14 124.46)
+			(xy 271.78 111.76) (xy 261.62 111.76)
 		)
 		(stroke
 			(width 0)
@@ -4733,7 +4733,7 @@
 	)
 	(wire
 		(pts
-			(xy 261.62 119.38) (xy 271.78 119.38)
+			(xy 231.14 119.38) (xy 220.98 119.38)
 		)
 		(stroke
 			(width 0)
@@ -4753,7 +4753,7 @@
 	)
 	(wire
 		(pts
-			(xy 220.98 121.92) (xy 231.14 121.92)
+			(xy 271.78 119.38) (xy 261.62 119.38)
 		)
 		(stroke
 			(width 0)
@@ -5002,7 +5002,7 @@
 		(uuid "fb574b71-00c9-4d07-8bd7-d766f68b2353")
 	)
 	(label "KEY_1_3"
-		(at 271.78 129.54 180)
+		(at 271.78 121.92 180)
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -5042,7 +5042,7 @@
 		(uuid "11566942-454a-45a6-bd96-53b98baee81a")
 	)
 	(label "KEY_2_2"
-		(at 271.78 124.46 180)
+		(at 271.78 104.14 180)
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -5082,7 +5082,7 @@
 		(uuid "3afd36f4-ba24-4e19-ac77-e8a3ae4baca4")
 	)
 	(label "KEY_2_1"
-		(at 271.78 116.84 180)
+		(at 271.78 101.6 180)
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -5132,17 +5132,17 @@
 		(uuid "6a5f6e4b-f5f6-4d01-bcad-872c65f485e2")
 	)
 	(label "KEY_2_3"
-		(at 220.98 116.84 0)
+		(at 271.78 109.22 180)
 		(effects
 			(font
 				(size 1.27 1.27)
 			)
-			(justify left bottom)
+			(justify right bottom)
 		)
 		(uuid "6ed928fb-acab-4130-a30f-4e08480a855c")
 	)
 	(label "KEY_1_1"
-		(at 271.78 111.76 180)
+		(at 271.78 127 180)
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -5162,7 +5162,7 @@
 		(uuid "7d49b0f1-4d76-4acd-b6bb-091f3fc77287")
 	)
 	(label "KEY_2_0"
-		(at 271.78 104.14 180)
+		(at 271.78 99.06 180)
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -5172,12 +5172,12 @@
 		(uuid "86491b6c-67c2-4dbc-abf1-56f7de90fa0b")
 	)
 	(label "KEY_1_4"
-		(at 220.98 121.92 0)
+		(at 271.78 119.38 180)
 		(effects
 			(font
 				(size 1.27 1.27)
 			)
-			(justify left bottom)
+			(justify right bottom)
 		)
 		(uuid "86c0692e-7092-4dc7-b2e7-0243c20dedb1")
 	)
@@ -5192,7 +5192,7 @@
 		(uuid "8731824a-fe57-4043-ab55-b27bdbebf0c7")
 	)
 	(label "KEY_0_0"
-		(at 271.78 99.06 180)
+		(at 271.78 116.84 180)
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -5232,7 +5232,7 @@
 		(uuid "b235c1ea-01c8-43bb-99d3-17e3bd1ba6a6")
 	)
 	(label "KEY_1_0"
-		(at 271.78 101.6 180)
+		(at 271.78 129.54 180)
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -5272,27 +5272,27 @@
 		(uuid "c9bae649-7cc5-4597-b2cb-6b5edb51e5f7")
 	)
 	(label "KEY_0_3"
-		(at 271.78 127 180)
-		(effects
-			(font
-				(size 1.27 1.27)
-			)
-			(justify right bottom)
-		)
-		(uuid "cbb1ed01-f1ad-46cb-8c90-d6e3c74db992")
-	)
-	(label "KEY_2_4"
-		(at 220.98 124.46 0)
+		(at 220.98 121.92 0)
 		(effects
 			(font
 				(size 1.27 1.27)
 			)
 			(justify left bottom)
 		)
+		(uuid "cbb1ed01-f1ad-46cb-8c90-d6e3c74db992")
+	)
+	(label "KEY_2_4"
+		(at 271.78 111.76 180)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify right bottom)
+		)
 		(uuid "d2ec01ff-d7f9-43cc-97b3-d39689173e4e")
 	)
 	(label "KEY_1_2"
-		(at 271.78 121.92 180)
+		(at 271.78 124.46 180)
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -5312,12 +5312,12 @@
 		(uuid "df7c834a-7a30-4f77-bd25-cac7e22e0914")
 	)
 	(label "KEY_0_2"
-		(at 271.78 119.38 180)
+		(at 220.98 119.38 0)
 		(effects
 			(font
 				(size 1.27 1.27)
 			)
-			(justify right bottom)
+			(justify left bottom)
 		)
 		(uuid "e001195a-a2ca-4e91-a71c-84f26c9f5da0")
 	)
@@ -5332,7 +5332,7 @@
 		(uuid "e0ed28bc-75d8-4696-a6c7-1f76b3ce1866")
 	)
 	(label "KEY_0_4"
-		(at 220.98 119.38 0)
+		(at 220.98 124.46 0)
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -5362,12 +5362,12 @@
 		(uuid "ec1130d3-24f0-443a-a216-cca706b4f096")
 	)
 	(label "KEY_0_1"
-		(at 271.78 109.22 180)
+		(at 220.98 116.84 0)
 		(effects
 			(font
 				(size 1.27 1.27)
 			)
-			(justify right bottom)
+			(justify left bottom)
 		)
 		(uuid "efa52240-d897-42e5-85e9-54361b1566a8")
 	)
