@@ -34,6 +34,10 @@ fp-info-cache
 *.xml
 *.csv
 
+# Exported gerber files
+**/gerber/*
+**/production_files/*
+
 # Archived Backups (KiCad 6.0)
 **/*-backups/*.zip
 
