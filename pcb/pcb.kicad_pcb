@@ -15554,6 +15554,18 @@
 			)
 		)
 	)
+	(gr_text "JLCJLCJLCJLC"
+		(at 240 100 90)
+		(layer "F.SilkS")
+		(uuid "08550776-7874-4f3d-a64f-9a82d76c4af0")
+		(effects
+			(font
+				(size 0.8 0.8)
+				(thickness 0.16)
+				(bold yes)
+			)
+		)
+	)
 	(gr_text "+"
 		(at 174.4 97.7 -90)
 		(layer "F.SilkS")
