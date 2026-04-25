@@ -8,6 +8,8 @@
 //#define LED_BUILTIN Pin_PA1
 //#define NO_LED_FEEDBACK_CODE      // Saves 216 bytes program memory
 
+#define ON_PRINT(A)
+
 #include <IRremote.hpp>
 
 // codes for Philips 32PFL5403D according to IRDB
@@ -55,14 +57,15 @@ void setup() {
     pinMode(cmd.keyPin, INPUT_PULLUP);
   }
 
-  Serial.begin(2000000);
+  ON_PRINT(Serial.pins(PIN_PA1, PIN_PA2));
+  ON_PRINT(Serial.begin(2000000));
 
-  Serial.println();
-  Serial.println();
-  Serial.println(F("START " __FILE__ "\r\n from " __DATE__ " " __TIME__ "\r\n using library version " VERSION_IRREMOTE));
-  Serial.print(F("Send IR signals at pin "));
-  Serial.println(IR_SEND_PIN);
-  Serial.println();
+  ON_PRINT(Serial.println());
+  ON_PRINT(Serial.println());
+  ON_PRINT(Serial.println(F("START " __FILE__ "\r\n from " __DATE__ " " __TIME__ "\r\n using library version " VERSION_IRREMOTE)));
+  ON_PRINT(Serial.print(F("Send IR signals at pin ")));
+  ON_PRINT(Serial.println(IR_SEND_PIN));
+  ON_PRINT(Serial.println());
 }
 
 void loop() {
@@ -75,32 +78,32 @@ void loop() {
       auto timeNextSendMs = millis();
       int sendCount = 0;
 
-      Serial.print(timeNextSendMs);
-      Serial.print(" pressed ");
-      Serial.print(cmd.name);
+      ON_PRINT(Serial.print(timeNextSendMs));
+      ON_PRINT(Serial.print(" pressed "));
+      ON_PRINT(Serial.print(cmd.name));
 
       // debounce
       while (millis() - timeNextSendMs < TIME_DEBOUNCE_MS) {
         if (digitalRead(cmd.keyPin)) {
-          Serial.println(" - debounce abort");
+          ON_PRINT(Serial.println(" - debounce abort"));
           return; // the key was released
         }
       }
 
       // still pressed - commence action
-      Serial.print(" - sending ");
-      Serial.print(cmd.rc6Command);
+      ON_PRINT(Serial.print(" - sending "));
+      ON_PRINT(Serial.print(cmd.rc6Command));
 
       // send once
       IrSender.sendRC6(cmd.rc6Address, cmd.rc6Command, 0);
       ++sendCount;
-      Serial.print(".");
+      ON_PRINT(Serial.print("."));
       
       // wait for single send release
       timeNextSendMs += TIME_SINGLE_PRESS_MS;
       while (millis() < timeNextSendMs) {
         if (digitalRead(cmd.keyPin)) {
-          Serial.println(" 1 time");
+          ON_PRINT(Serial.println(" 1 time"));
           return; // the key was released
         }
       }
@@ -109,14 +112,14 @@ void loop() {
       while (true) {
         IrSender.sendRC6(cmd.rc6Address, cmd.rc6Command, 0);
         ++sendCount;
-        Serial.print(".");
+        ON_PRINT(Serial.print("."));
         timeNextSendMs += TIME_REPEAT_PRESS_MS;
         while (millis() < timeNextSendMs) {
           if (digitalRead(cmd.keyPin)) {
-            Serial.print(" ");
-            Serial.print(sendCount);
-            Serial.println(" times");
-            Serial.flush();
+            ON_PRINT(Serial.print(" "));
+            ON_PRINT(Serial.print(sendCount));
+            ON_PRINT(Serial.println(" times"));
+            ON_PRINT(Serial.flush());
             return; // the key was released
           }
         }
