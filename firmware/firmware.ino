@@ -1,8 +1,7 @@
 #define IR_SEND_PIN PIN_PA5       // 3 for Arduino Nano but PIN_PA5 on ATtiny3226...
 
-#if !defined(ARDUINO_ESP32C3_DEV) // This is due to a bug in RISC-V compiler, which requires unused function sections :-(.
 #define DISABLE_CODE_FOR_RECEIVER // Disables static receiver code like receive timer ISR handler and static IRReceiver and irparams data. Saves 450 bytes program memory and 269 bytes RAM if receiving functions are not required.
-#endif
+#define IR_USE_AVR_TIMER_A        // Fix because ATtiny3226 is not explicitly supported by the IRremote library, yet...
 
 #undef LED_BUILTIN                // No LED defined in megaTinyCore
 #define LED_BUILTIN PIN_PA1
