@@ -1,3 +1,12 @@
+/************************
+ *
+ * This is builtfor the ClickyRemote running on an ATtiny3226.
+ * You need the TinyMegaCore board package and the IRremote library.
+ * Set Tools -> Clock -> 8 MHz internal
+ *
+ ************************/
+
+
 #define IR_SEND_PIN PIN_PA5       // 3 for Arduino Nano but PIN_PA5 on ATtiny3226...
 
 #define DISABLE_CODE_FOR_RECEIVER // Disables static receiver code like receive timer ISR handler and static IRReceiver and irparams data. Saves 450 bytes program memory and 269 bytes RAM if receiving functions are not required.
@@ -97,7 +106,7 @@ void loop() {
       IrSender.sendRC6(cmd.rc6Address, cmd.rc6Command, 0);
       ++sendCount;
       ON_PRINT(Serial.print("."));
-      
+
       // wait for single send release
       timeNextSendMs += TIME_SINGLE_PRESS_MS;
       while (millis() < timeNextSendMs) {
