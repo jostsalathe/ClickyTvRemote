@@ -16,12 +16,17 @@
 #define LED_BUILTIN PIN_PA1
 //#define NO_LED_FEEDBACK_CODE      // Saves 216 bytes program memory
 
+#ifdef NO_LED_FEEDBACK_CODE
+#define ON_PRINT(A) A
+#else
 #define ON_PRINT(A)
+#endif
 
 #include <IRremote.hpp>
 
 // codes for Philips 32PFL5403D according to IRDB
 // https://github.com/probonopd/irdb/blob/master/codes/Philips/Unknown_32PFL5403D/0%2C-1.csv
+
 
 
 struct Command {
@@ -61,12 +66,13 @@ void setup() {
   // put your setup code here, to run once:
   pinMode(LED_BUILTIN, OUTPUT);
   pinMode(IR_SEND_PIN, OUTPUT);
+
   for (auto cmd : commands) {
     pinMode(cmd.keyPin, INPUT_PULLUP);
   }
 
   ON_PRINT(Serial.pins(PIN_PA1, PIN_PA2));
-  ON_PRINT(Serial.begin(2000000));
+  ON_PRINT(Serial.begin(115200, SERIAL_TX_ONLY));
 
   ON_PRINT(Serial.println());
   ON_PRINT(Serial.println());
