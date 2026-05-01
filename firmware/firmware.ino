@@ -6,6 +6,8 @@
  *
  ************************/
 
+#include <avr/sleep.h>
+
 
 #define IR_SEND_PIN PIN_PA5       // 3 for Arduino Nano but PIN_PA5 on ATtiny3226...
 
@@ -60,6 +62,15 @@ static constexpr Command commands[] = {
   {PIN_PB1, 0, 89, "KEY_DOWN"},            // KEY_1_4
   {PIN_PA7, 0, 91, "KEY_RIGHT"},           // KEY_2_4
 };
+
+void enterSleep() {
+  // Before sleeping
+  ON_PRINT(Serial.println("Entering deep sleep..."));
+  ADC0.CTRLA &= ~ADC_ENABLE_bm; //Very important on the tinyAVR 2-series
+  set_sleep_mode(SLEEP_MODE_PWR_DOWN);
+  sleep_enable();
+  sleep_cpu();
+}
 
 void reportBattery() {
   //TODO: read battery voltage
