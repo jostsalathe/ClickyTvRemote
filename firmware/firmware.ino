@@ -76,6 +76,9 @@ void setup() {
 
   // upon waking if you plan to use the ADC
   ADC0.CTRLA |= ADC_ENABLE_bm;
+  analogReference(INTERNAL1V024); // set reference to the desired voltage, and set that as the ADC reference.
+  uint16_t reading = analogRead(ADC_VDDDIV10); //first reading might be inaccturate
+  (void) reading; // to suppress unused variable warning
 
   // after wakeup, disable interrupts and enable Pullups for all buttons
   setPinModes(false);
@@ -105,8 +108,8 @@ void setup() {
     auto timeNextSendMs = millis();
     int sendCount = 0;
 
-    ON_PRINT(Serial.print(micros()));
-    ON_PRINT(Serial.print("us - pressed "));
+    ON_PRINT(Serial.print(millis()));
+    ON_PRINT(Serial.print(" ms - pressed "));
     ON_PRINT(Serial.print(triggeredCmd->name));
 
     // debounce
@@ -201,8 +204,8 @@ void setPinModes(bool enableInterrupt) {
 
 void deepSleep() {
   // Before sleeping
-  ON_PRINT(Serial.print(micros()));
-  ON_PRINT(Serial.println("us - Entering deep sleep..."));
+  ON_PRINT(Serial.print(millis()));
+  ON_PRINT(Serial.println(" ms - Entering deep sleep..."));
   ADC0.CTRLA &= ~ADC_ENABLE_bm; //Very important on the tinyAVR 2-series
 
   set_sleep_mode(SLEEP_MODE_PWR_DOWN);
@@ -222,13 +225,14 @@ void deepSleep() {
 }
 
 void reportBattery(bool print) {
-  //TODO: read battery voltage
-  //TODO: calculate battery level
-  //TODO: report battery level
+  uint16_t reading = analogReadEnh(ADC_VDDDIV10, 14, 0); // read battery voltage
+  uint16_t uBatMV = reading*10/16; // calculate battery level
+  // report battery level
 #ifdef NO_LED_FEEDBACK_CODE
   if (print) {
-    ON_PRINT(Serial.print(" - UBat="));
-    // TODO: via Serial
+    ON_PRINT(Serial.print(" - UBat = "));
+    ON_PRINT(Serial.print(uBatMV));
+    ON_PRINT(Serial.println(" mV"));
   }
 #else
   // TODO: via blink code on LED_BUILTIN
