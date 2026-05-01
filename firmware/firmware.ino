@@ -43,6 +43,11 @@ struct Command {
   const char* name;
 };
 
+struct VoltageToSoc {
+    uint16_t voltageMv;
+    uint8_t soc; // in %
+};
+
 
 /* static variable definitions */
 
@@ -68,6 +73,28 @@ static constexpr Command commands[] = {
   {PIN_PC3, 0, 90, "KEY_LEFT"},            // KEY_0_4
   {PIN_PB1, 0, 89, "KEY_DOWN"},            // KEY_1_4
   {PIN_PA7, 0, 91, "KEY_RIGHT"},           // KEY_2_4
+};
+
+// millivolt -> state of charge look up table for two NiMH cells
+static constexpr VoltageToSoc voltSocLUT[] = {
+    {2900, 100},
+    {2760, 95},
+    {2680, 90},
+
+    // Plateau (wichtigster Bereich!)
+    {2600, 80},
+    {2570, 70},
+    {2540, 60},
+    {2520, 50},
+    {2500, 40},
+    {2480, 30},
+
+    // Entladungsknick
+    {2440, 20},
+    {2400, 10},
+    {2360, 5},
+    {2300, 2},
+    {2200, 0}
 };
 
 
@@ -224,15 +251,40 @@ void deepSleep() {
   sleep_cpu();
 }
 
+uint8_t voltageToSoc(uint16_t mv) {
+    constexpr uint8_t n = sizeof(voltSocLUT) / sizeof(voltSocLUT[0]);
+
+    for (uint8_t i = 0; i < n - 1; i++) {
+        const uint16_t mvHigh = voltSocLUT[i].voltageMv;
+        const uint8_t socHigh = voltSocLUT[i].soc;
+        const uint16_t mvLow = voltSocLUT[i+1].voltageMv;
+        const uint8_t socLow = voltSocLUT[i+1].soc;
+
+        if (mv <= mvHigh && mv >= mvLow) {
+            const uint16_t dmv = mv - mvLow;
+            const uint16_t ds = socHigh - socLow;
+
+            // nur hier kurz 32-bit für Sicherheit
+            int32_t interp = (int32_t)dmv * ds;
+
+            return socLow + interp / (mvHigh - mvLow);
+        }
+    }
+
+    return (mv > voltSocLUT[0].voltageMv) ? 100 : 0;
+}
+
 void reportBattery(bool print) {
-  uint16_t reading = analogReadEnh(ADC_VDDDIV10, 14, 0); // read battery voltage
-  uint16_t uBatMV = reading*10/16; // calculate battery level
+  uint16_t uBatMv = analogReadEnh(ADC_VDDDIV10, 14, 0) * 10 / 16; // read battery voltage
+  uint8_t soc = voltageToSoc(uBatMv);// calculate battery level
   // report battery level
 #ifdef NO_LED_FEEDBACK_CODE
   if (print) {
     ON_PRINT(Serial.print(" - UBat = "));
-    ON_PRINT(Serial.print(uBatMV));
-    ON_PRINT(Serial.println(" mV"));
+    ON_PRINT(Serial.print(uBatMv));
+    ON_PRINT(Serial.print(" mV ("));
+    ON_PRINT(Serial.print(soc));
+    ON_PRINT(Serial.println(" %)"));
   }
 #else
   // TODO: via blink code on LED_BUILTIN
