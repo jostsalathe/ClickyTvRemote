@@ -9,7 +9,7 @@
 #include <avr/sleep.h>
 
 
-#define IR_SEND_PIN PIN_PA5       // 3 for Arduino Nano but PIN_PA5 on ATtiny3226...
+#define IR_SEND_PIN PIN_PA5
 
 #define DISABLE_CODE_FOR_RECEIVER // Disables static receiver code like receive timer ISR handler and static IRReceiver and irparams data. Saves 450 bytes program memory and 269 bytes RAM if receiving functions are not required.
 #define IR_USE_AVR_TIMER_A        // Fix because ATtiny3226 is not explicitly supported by the IRremote library, yet...
@@ -26,10 +26,15 @@
 
 #include <IRremote.hpp>
 
-// codes for Philips 32PFL5403D according to IRDB
-// https://github.com/probonopd/irdb/blob/master/codes/Philips/Unknown_32PFL5403D/0%2C-1.csv
+
+/* function prototypes */
+
+void setPinModes(bool enableInterrupt);
+void deepSleep();
+void reportBattery(bool print);
 
 
+/* structure definitions */
 
 struct Command {
   int keyPin;
@@ -38,21 +43,23 @@ struct Command {
   const char* name;
 };
 
+
+/* static variable definitions */
+
 static constexpr int TIME_DEBOUNCE_MS = 10;
 static constexpr int TIME_SINGLE_PRESS_MS = 500;
 static constexpr int TIME_REPEAT_PRESS_MS = 100;
 
+// codes for Philips 32PFL5403D according to IRDB
+// https://github.com/probonopd/irdb/blob/master/codes/Philips/Unknown_32PFL5403D/0%2C-1.csv
 static constexpr Command commands[] = {
   {PIN_PB0, 0xff, 0xff, "KEY_BAT"},        // KEY_0_0
   {PIN_PB5, 0, 12, "KEY_PWR"},             // KEY_1_0
-  // {4, 0, 12, "KEY_PWR"}, // on Nano prototype
   {PIN_PA2, 0, 12, "KEY_PWR"},             // KEY_2_0
   {PIN_PC0, 0, 32, "KEY_CHANNELUP"},       // KEY_0_1
-  // {A3, 0, 16, "KEY_VOLUMEUP"}, // on Nano prototype
   {PIN_PB4, 0, 16, "KEY_VOLUMEUP"},        // KEY_1_1
   {PIN_PA3, 0, 245, "KEY_Picture_Format"}, // KEY_2_1
   {PIN_PC1, 0, 33, "KEY_CHANNELDOWN"},     // KEY_0_2
-  // {A0, 0, 17, "KEY_VOLUMEDOWN"}, // on Nano prototype
   {PIN_PB3, 0, 17, "KEY_VOLUMEDOWN"},      // KEY_1_2
   {PIN_PA4, 0, 13, "KEY_MUTE"},            // KEY_2_2
   {PIN_PC2, 0, 84, "KEY_MENU"},            // KEY_0_3
@@ -63,41 +70,18 @@ static constexpr Command commands[] = {
   {PIN_PA7, 0, 91, "KEY_RIGHT"},           // KEY_2_4
 };
 
-void enterSleep() {
-  // Before sleeping
-  ON_PRINT(Serial.println("Entering deep sleep..."));
-  ADC0.CTRLA &= ~ADC_ENABLE_bm; //Very important on the tinyAVR 2-series
-  set_sleep_mode(SLEEP_MODE_PWR_DOWN);
-  sleep_enable();
-  sleep_cpu();
-}
-
-void reportBattery() {
-  //TODO: read battery voltage
-  //TODO: calculate battery level
-  //TODO: report battery level
-#ifdef NO_LED_FEEDBACK_CODE
-  // TODO: via Serial
-#else
-  // TODO: via blink code on LED_BUILTIN
-#endif
-}
 
 void setup() {
   // put your setup code here, to run once:
 
-  // upon waking if ou plan to use the ADC
+  // upon waking if you plan to use the ADC
   ADC0.CTRLA |= ADC_ENABLE_bm;
 
-  pinMode(LED_BUILTIN, OUTPUT);
-  pinMode(IR_SEND_PIN, OUTPUT);
-
-  for (auto cmd : commands) {
-    pinMode(cmd.keyPin, INPUT_PULLUP);
-  }
+  // after wakeup, disable interrupts and enable Pullups for all buttons
+  setPinModes(false);
 
   ON_PRINT(Serial.pins(PIN_PA1, PIN_PA2));
-  ON_PRINT(Serial.begin(115200, SERIAL_TX_ONLY));
+  ON_PRINT(Serial.begin(230400, SERIAL_TX_ONLY));
 
   ON_PRINT(Serial.println());
   ON_PRINT(Serial.println());
@@ -105,64 +89,149 @@ void setup() {
   ON_PRINT(Serial.print(F("Send IR signals at pin ")));
   ON_PRINT(Serial.println(IR_SEND_PIN));
   ON_PRINT(Serial.println());
-}
 
-void loop() {
-  // put your main code here, to run repeatedly:
-  // read buttons and send codes defined above
-
-  for (auto cmd : commands) {
+  // read buttons and find out what woke up the controller
+  const Command *triggeredCmd = nullptr;
+  for (const Command &cmd : commands) {
     if (!digitalRead(cmd.keyPin)) {
       // this commands key was pressed
-      auto timeNextSendMs = millis();
-      int sendCount = 0;
+      triggeredCmd = &cmd;
+      break;
+    }
+  }
 
-      ON_PRINT(Serial.print(timeNextSendMs));
-      ON_PRINT(Serial.print(" pressed "));
-      ON_PRINT(Serial.print(cmd.name));
+  // execute triggered command
+  if (triggeredCmd != nullptr) {
+    auto timeNextSendMs = millis();
+    int sendCount = 0;
 
-      // debounce
-      while (millis() - timeNextSendMs < TIME_DEBOUNCE_MS) {
-        if (digitalRead(cmd.keyPin)) {
-          ON_PRINT(Serial.println(" - debounce abort"));
-          return; // the key was released
-        }
+    ON_PRINT(Serial.print(micros()));
+    ON_PRINT(Serial.print("us - pressed "));
+    ON_PRINT(Serial.print(triggeredCmd->name));
+
+    // debounce
+    while (millis() - timeNextSendMs < TIME_DEBOUNCE_MS) {
+      if (digitalRead(triggeredCmd->keyPin)) {
+        ON_PRINT(Serial.println(" - debounce abort"));
+        deepSleep();
       }
+    }
 
-      // still pressed - commence action
+    // still pressed - commence action
+    if (triggeredCmd->rc6Address == 0xff && triggeredCmd->rc6Command == 0xff) {
+      // handle battery readout
+      reportBattery(true);
+      while (digitalRead(triggeredCmd->keyPin) == LOW) {
+        reportBattery(false);
+      }
+      ON_PRINT(Serial.println());
+      deepSleep();
+    } else {
+      // send command
       ON_PRINT(Serial.print(" - sending "));
-      ON_PRINT(Serial.print(cmd.rc6Command));
+      ON_PRINT(Serial.print(triggeredCmd->rc6Command));
 
       // send once
-      IrSender.sendRC6(cmd.rc6Address, cmd.rc6Command, 0);
+      IrSender.sendRC6(triggeredCmd->rc6Address, triggeredCmd->rc6Command, 0);
       ++sendCount;
       ON_PRINT(Serial.print("."));
 
       // wait for single send release
       timeNextSendMs += TIME_SINGLE_PRESS_MS;
       while (millis() < timeNextSendMs) {
-        if (digitalRead(cmd.keyPin)) {
+        if (digitalRead(triggeredCmd->keyPin)) {
           ON_PRINT(Serial.println(" 1 time"));
-          return; // the key was released
+          deepSleep();
         }
       }
 
       // enter repeat mode for as long as key continues to be pressed
       while (true) {
-        IrSender.sendRC6(cmd.rc6Address, cmd.rc6Command, 0);
+        IrSender.sendRC6(triggeredCmd->rc6Address, triggeredCmd->rc6Command, 0);
         ++sendCount;
         ON_PRINT(Serial.print("."));
         timeNextSendMs += TIME_REPEAT_PRESS_MS;
         while (millis() < timeNextSendMs) {
-          if (digitalRead(cmd.keyPin)) {
+          if (digitalRead(triggeredCmd->keyPin)) {
             ON_PRINT(Serial.print(" "));
             ON_PRINT(Serial.print(sendCount));
             ON_PRINT(Serial.println(" times"));
             ON_PRINT(Serial.flush());
-            return; // the key was released
+            deepSleep();
           }
         }
       }
     }
   }
+  deepSleep();
 }
+
+void loop() {
+  // put your main code here, to run repeatedly:
+  ON_PRINT(Serial.println("How the heck did I end up in loop()?!"));
+  deepSleep();
+}
+
+
+void setPinModes(bool enableInterrupt) {
+  const uint8_t newPinMode = 0b1000 | (enableInterrupt ? PORT_ISC_LEVEL_gc : PORT_ISC_INTDISABLE_gc);
+  
+  // enable pin change interrupt for all buttons
+  pinMode(LED_BUILTIN, OUTPUT);
+  digitalWrite(LED_BUILTIN, LOW);
+  pinMode(IR_SEND_PIN, OUTPUT);
+  digitalWrite(IR_SEND_PIN, LOW);
+
+  PORTA.PIN2CTRL = newPinMode;
+  PORTA.PIN3CTRL = newPinMode;
+  PORTA.PIN4CTRL = newPinMode;
+  PORTA.PIN6CTRL = newPinMode;
+  PORTA.PIN7CTRL = newPinMode;
+  PORTB.PIN0CTRL = newPinMode;
+  PORTB.PIN1CTRL = newPinMode;
+  PORTB.PIN2CTRL = newPinMode;
+  PORTB.PIN3CTRL = newPinMode;
+  PORTB.PIN4CTRL = newPinMode;
+  PORTB.PIN5CTRL = newPinMode;
+  PORTC.PIN0CTRL = newPinMode;
+  PORTC.PIN1CTRL = newPinMode;
+  PORTC.PIN2CTRL = newPinMode;
+  PORTC.PIN3CTRL = newPinMode;
+}
+
+void deepSleep() {
+  // Before sleeping
+  ON_PRINT(Serial.print(micros()));
+  ON_PRINT(Serial.println("us - Entering deep sleep..."));
+  ADC0.CTRLA &= ~ADC_ENABLE_bm; //Very important on the tinyAVR 2-series
+
+  set_sleep_mode(SLEEP_MODE_PWR_DOWN);
+  sleep_enable();
+
+  // and clear interrupt flags
+  PORTA.INTFLAGS = 0xff;
+  PORTB.INTFLAGS = 0xff;
+  PORTC.INTFLAGS = 0xff;
+
+  // enable pin change interrupt for all buttons
+  ON_PRINT(Serial.flush());
+  ON_PRINT(Serial.end());
+  setPinModes(true);
+
+  sleep_cpu();
+}
+
+void reportBattery(bool print) {
+  //TODO: read battery voltage
+  //TODO: calculate battery level
+  //TODO: report battery level
+#ifdef NO_LED_FEEDBACK_CODE
+  if (print) {
+    ON_PRINT(Serial.print(" - UBat="));
+    // TODO: via Serial
+  }
+#else
+  // TODO: via blink code on LED_BUILTIN
+#endif
+}
+
