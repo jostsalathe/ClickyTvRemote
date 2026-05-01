@@ -41,7 +41,7 @@ static constexpr int TIME_SINGLE_PRESS_MS = 500;
 static constexpr int TIME_REPEAT_PRESS_MS = 100;
 
 static constexpr Command commands[] = {
-  {PIN_PB0, 0, 12, "KEY_PWR"},             // KEY_0_0
+  {PIN_PB0, 0xff, 0xff, "KEY_BAT"},        // KEY_0_0
   {PIN_PB5, 0, 12, "KEY_PWR"},             // KEY_1_0
   // {4, 0, 12, "KEY_PWR"}, // on Nano prototype
   {PIN_PA2, 0, 12, "KEY_PWR"},             // KEY_2_0
@@ -61,9 +61,23 @@ static constexpr Command commands[] = {
   {PIN_PA7, 0, 91, "KEY_RIGHT"},           // KEY_2_4
 };
 
+void reportBattery() {
+  //TODO: read battery voltage
+  //TODO: calculate battery level
+  //TODO: report battery level
+#ifdef NO_LED_FEEDBACK_CODE
+  // TODO: via Serial
+#else
+  // TODO: via blink code on LED_BUILTIN
+#endif
+}
 
 void setup() {
   // put your setup code here, to run once:
+
+  // upon waking if ou plan to use the ADC
+  ADC0.CTRLA |= ADC_ENABLE_bm;
+
   pinMode(LED_BUILTIN, OUTPUT);
   pinMode(IR_SEND_PIN, OUTPUT);
 
