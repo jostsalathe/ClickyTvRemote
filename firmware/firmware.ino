@@ -29,7 +29,7 @@
 
 /* function prototypes */
 
-void setPinModes(bool enableInterrupt);
+void setPinModes(bool prepareSleep);
 void powerDown();
 void reportBattery(bool print);
 
@@ -202,8 +202,8 @@ void loop() {
 }
 
 
-void setPinModes(bool enableInterrupt) {
-  const uint8_t newPinMode = 0b1000 | (enableInterrupt ? PORT_ISC_LEVEL_gc : PORT_ISC_INTDISABLE_gc);
+void setPinModes(bool prepareSleep) {
+  const uint8_t newPinMode = 0b1000 | (prepareSleep ? PORT_ISC_LEVEL_gc : PORT_ISC_INTDISABLE_gc);
   
   // enable pin change interrupt for all buttons
   pinMode(LED_BUILTIN, OUTPUT);
@@ -253,7 +253,7 @@ void powerDown() {
 uint8_t voltageToSoc(uint16_t mv) {
     constexpr uint8_t n = sizeof(voltSocLUT) / sizeof(voltSocLUT[0]);
 
-    for (uint8_t i = 0; i < n - 1; i++) {
+    for (int i = 0; i < n - 1; ++i) {
         const uint16_t mvHigh = voltSocLUT[i].voltageMv;
         const uint8_t socHigh = voltSocLUT[i].soc;
         const uint16_t mvLow = voltSocLUT[i+1].voltageMv;
@@ -273,6 +273,17 @@ uint8_t voltageToSoc(uint16_t mv) {
     return (mv > voltSocLUT[0].voltageMv) ? 100 : 0;
 }
 
+void dimLedBuiltinDelay(uint16_t ms, uint8_t brightness) {
+  auto end = millis() + ms;
+  while(millis() < end) {
+    if ( ((micros() / 4) % 256) < brightness) {
+      digitalWriteFast(LED_BUILTIN, HIGH);
+    } else {
+      digitalWriteFast(LED_BUILTIN, LOW);
+    }
+  }
+}
+
 void reportBattery(bool print) {
   uint16_t uBatMv = analogReadEnh(ADC_VDDDIV10, 14, 2) * 10 / 32; // read battery voltage
   uBatMv -= 20; // offset calibration
@@ -287,7 +298,14 @@ void reportBattery(bool print) {
     ON_PRINT(Serial.println(" %)"));
   }
 #else
-  // TODO: via blink code on LED_BUILTIN
+  // via blink code on LED_BUILTIN
+  soc = (soc + 5) / 10; // for correct roundling with step size of 10%
+  for (int i = 0; i < 10; ++i) {
+    bool on = soc > i;
+    dimLedBuiltinDelay(on ? 200 : 10, 32);
+    digitalWrite(LED_BUILTIN, LOW);
+    delay(on ? 300 : 490);
+  }
 #endif
 }
 
