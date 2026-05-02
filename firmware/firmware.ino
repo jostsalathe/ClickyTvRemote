@@ -274,7 +274,8 @@ uint8_t voltageToSoc(uint16_t mv) {
 }
 
 void reportBattery(bool print) {
-  uint16_t uBatMv = analogReadEnh(ADC_VDDDIV10, 14, 0) * 10 / 16; // read battery voltage
+  uint16_t uBatMv = analogReadEnh(ADC_VDDDIV10, 14, 2) * 10 / 32; // read battery voltage
+  uBatMv -= 20; // offset calibration
   uint8_t soc = voltageToSoc(uBatMv);// calculate battery level
   // report battery level
 #ifdef NO_LED_FEEDBACK_CODE
