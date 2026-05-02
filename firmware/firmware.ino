@@ -30,7 +30,7 @@
 /* function prototypes */
 
 void setPinModes(bool enableInterrupt);
-void deepSleep();
+void powerDown();
 void reportBattery(bool print);
 
 
@@ -143,7 +143,7 @@ void setup() {
     while (millis() - timeNextSendMs < TIME_DEBOUNCE_MS) {
       if (digitalRead(triggeredCmd->keyPin)) {
         ON_PRINT(Serial.println(" - debounce abort"));
-        deepSleep();
+        powerDown();
       }
     }
 
@@ -155,7 +155,7 @@ void setup() {
         reportBattery(false);
       }
       ON_PRINT(Serial.println());
-      deepSleep();
+      powerDown();
     } else {
       // send command
       ON_PRINT(Serial.print(" - sending "));
@@ -171,7 +171,7 @@ void setup() {
       while (millis() < timeNextSendMs) {
         if (digitalRead(triggeredCmd->keyPin)) {
           ON_PRINT(Serial.println(" 1 time"));
-          deepSleep();
+          powerDown();
         }
       }
 
@@ -187,19 +187,18 @@ void setup() {
             ON_PRINT(Serial.print(sendCount));
             ON_PRINT(Serial.println(" times"));
             ON_PRINT(Serial.flush());
-            deepSleep();
           }
         }
       }
     }
   }
-  deepSleep();
+  powerDown();
 }
 
 void loop() {
   // put your main code here, to run repeatedly:
   ON_PRINT(Serial.println("How the heck did I end up in loop()?!"));
-  deepSleep();
+  powerDown();
 }
 
 
@@ -229,7 +228,7 @@ void setPinModes(bool enableInterrupt) {
   PORTC.PIN3CTRL = newPinMode;
 }
 
-void deepSleep() {
+void powerDown() {
   // Before sleeping
   ON_PRINT(Serial.print(millis()));
   ON_PRINT(Serial.println(" ms - Entering deep sleep..."));
