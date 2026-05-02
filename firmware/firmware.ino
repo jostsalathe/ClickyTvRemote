@@ -187,6 +187,7 @@ void setup() {
             ON_PRINT(Serial.print(sendCount));
             ON_PRINT(Serial.println(" times"));
             ON_PRINT(Serial.flush());
+            powerDown();
           }
         }
       }
