@@ -54,6 +54,7 @@ struct VoltageToSoc {
 static constexpr int TIME_DEBOUNCE_MS = 10;
 static constexpr int TIME_SINGLE_PRESS_MS = 500;
 static constexpr int TIME_REPEAT_PRESS_MS = 100;
+static constexpr int TIME_BEFORE_POWERDOWN_MS = 2000;
 
 // codes for Philips 32PFL5403D according to IRDB
 // https://github.com/probonopd/irdb/blob/master/codes/Philips/Unknown_32PFL5403D/0%2C-1.csv
@@ -97,6 +98,10 @@ static constexpr VoltageToSoc voltSocLUT[] = {
     {2200, 0}
 };
 
+/* global variables */
+
+volatile uint32_t timeForPowerDownMs = 0;
+
 
 void setup() {
   // put your setup code here, to run once:
@@ -119,6 +124,14 @@ void setup() {
   ON_PRINT(Serial.print(F("Send IR signals at pin ")));
   ON_PRINT(Serial.println(IR_SEND_PIN));
   ON_PRINT(Serial.println());
+  timeForPowerDownMs = millis() + TIME_BEFORE_POWERDOWN_MS;
+}
+
+void loop() {
+  // check if inactive for long enough to power down
+  if (millis() > timeForPowerDownMs) {
+    powerDown();
+  }
 
   // read buttons and find out what woke up the controller
   const Command *triggeredCmd = nullptr;
@@ -143,7 +156,7 @@ void setup() {
     while (millis() - timeNextSendMs < TIME_DEBOUNCE_MS) {
       if (digitalRead(triggeredCmd->keyPin)) {
         ON_PRINT(Serial.println(" - debounce abort"));
-        powerDown();
+        return;
       }
     }
 
@@ -155,7 +168,8 @@ void setup() {
         reportBattery(false);
       }
       ON_PRINT(Serial.println());
-      powerDown();
+      timeForPowerDownMs = millis() + TIME_BEFORE_POWERDOWN_MS;
+      return;
     } else {
       // send command
       ON_PRINT(Serial.print(" - sending "));
@@ -171,7 +185,8 @@ void setup() {
       while (millis() < timeNextSendMs) {
         if (digitalRead(triggeredCmd->keyPin)) {
           ON_PRINT(Serial.println(" 1 time"));
-          powerDown();
+          timeForPowerDownMs = millis() + TIME_BEFORE_POWERDOWN_MS;
+          return;
         }
       }
 
@@ -187,19 +202,13 @@ void setup() {
             ON_PRINT(Serial.print(sendCount));
             ON_PRINT(Serial.println(" times"));
             ON_PRINT(Serial.flush());
-            powerDown();
+            timeForPowerDownMs = millis() + TIME_BEFORE_POWERDOWN_MS;
+            return;
           }
         }
       }
     }
   }
-  powerDown();
-}
-
-void loop() {
-  // put your main code here, to run repeatedly:
-  ON_PRINT(Serial.println("How the heck did I end up in loop()?!"));
-  powerDown();
 }
 
 
